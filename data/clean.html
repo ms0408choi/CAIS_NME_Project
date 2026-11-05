@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Review Balance | Clean practice data</title>
+  <script src="clean.js" defer></script>
+  <style>
+    body { margin: 2rem auto; padding: 0 1rem; max-width: 55rem; font: 1rem/1.5 system-ui, sans-serif; color: #182c24; }
+    button { padding: .6rem 1rem; font: inherit; }
+    li { margin-bottom: .35rem; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <h1>Clean practice data</h1>
+  <p>Choose the original practice file to see where each row goes.</p>
+  <button id="run">Run cleaning</button>
+  <input id="file" type="file" accept=".csv,text/csv" hidden>
+  <button id="download" disabled>Download clean.csv</button>
+  <p id="status" role="status"></p>
+  <div id="results"></div>
+  <script>
+    const file = document.getElementById('file');
+    const status = document.getElementById('status');
+    const results = document.getElementById('results');
+    const download = document.getElementById('download');
+    let cleaned;
+    document.getElementById('run').onclick = () => file.click();
+    file.onchange = async () => {
+      const selected = file.files[0];
+      if (!selected) return;
+      results.replaceChildren();
+      download.disabled = true;
+      try {
+        cleaned = cleanCSV(await selected.text());
+        const groups = [['Clean rows', cleaned.clean], ['Removed rows', cleaned.removed], ['Set aside for review', cleaned.review]];
+        const total = groups.reduce((sum, [, rows]) => sum + rows.length, 0);
+        status.textContent = `Row check passed: ${total} raw = ${cleaned.clean.length} clean + ${cleaned.removed.length} removed + ${cleaned.review.length} set aside.`;
+        for (const [label, rows] of groups) {
+          const heading = document.createElement('h2');
+          heading.textContent = label;
+          const list = document.createElement('ul');
+          for (const row of rows) {
+            const item = document.createElement('li');
+            item.textContent = `Source row ${row.source_row}: ${row.reason || row.values.join(' · ')}`;
+            list.append(item);
+          }
+          results.append(heading, list);
+        }
+        download.disabled = false;
+      } catch (error) {
+        status.textContent = error.message;
+      } finally {
+        file.value = '';
+      }
+    };
+    download.onclick = () => {
+      const url = URL.createObjectURL(new Blob([exportCleanCSV(cleaned)], { type: 'text/csv' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'clean.csv';
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    };
+  </script>
+</body>
+</html>
