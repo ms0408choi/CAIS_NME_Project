@@ -1,0 +1,26 @@
+result_id,evaluated_on,task,confidence,outcome
+R001,2026-10-28,Classification,92,Correct
+R002,2026-10-28,Summarization,61,Incorrect
+R003,10/29/2026,Extraction,84,Correct
+R004,2026-10-29,Classification,76%,Correct
+R005,2026-10-29,summarization,72,Incorrect
+R006,2026-10-29,Extraction,95,Correct
+R007,2026-10-30,Classification,,Correct
+R008,2026-10-30,Summarization,54,Incorrect
+R008,2026-10-30,Summarization,54,Incorrect
+R009,2026-10-30,Extraction,112,Correct
+R010,2026-10-30,Classification,100,Incorrect
+R011,2026-10-31,Summarization,83,Correct
+R012,Oct 31 2026,Extraction,65,Incorrect
+R013,2026-10-31,Classification,88,CORRECT
+R014,2026-10-31,Summarization,79,Correct
+R015,2027-11-01,Extraction,91,Correct
+R016,2026-11-01,Classification,48,Incorrect
+R017,2026-11-01,Summarization,68,
+R018,2026-11-01,Extraction,81,Correct
+R019,2026-11-02,Classification,86,Correct
+R020,2026-11-02,Summarization,73,Incorrect
+R021,2026-11-02,Extraction,97,Correct
+R022,2026-11-03,Classification,59,Incorrect
+R023,2026-11-03,Summarization,90,Correct
+TOTAL,,"Export summary, 24 entries",,
