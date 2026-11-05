@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Review Balance — Human review simulator</title>
   <link rel="stylesheet" href="style.css">
+  <script src="data/clean.js" defer></script>
+  <script src="data/schema.js" defer></script>
+  <script src="data/validate.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -17,13 +20,22 @@
         <label class="sr-only" for="slider">Adjust confidence threshold</label><input id="slider" type="range" min="0" max="100" step="1" value="70"><div class="range-labels"><span>0% · Review none</span><span>100% · Review all</span></div>
         <p id="error" role="alert"></p><p id="policy" class="policy"></p><button id="reset" type="button">Reset to 70%</button>
       </div>
-      <div class="results"><p class="eyebrow">02 / SEE THE IMPACT</p><div class="metrics" aria-live="polite" aria-atomic="true"><article><p>Human review</p><strong id="review">—</strong><span>of 100 results</span></article><article><p>Auto-passed</p><strong id="passed">—</strong><span>without review</span></article><article class="error-card"><p>Errors auto-passed</p><strong id="errors">—</strong><span>incorrect results left unchecked</span></article></div>
+      <div class="results"><p class="eyebrow">02 / SEE THE IMPACT</p><div class="metrics" aria-live="polite" aria-atomic="true"><article><p>Human review</p><strong id="review">—</strong><span>of <span id="result-count">100</span> results</span></article><article><p>Auto-passed</p><strong id="passed">—</strong><span>without review</span></article><article class="error-card"><p>Errors auto-passed</p><strong id="errors">—</strong><span>incorrect results left unchecked</span></article></div>
         <div class="bar" aria-hidden="true"><div id="review-bar"></div><div id="pass-bar"></div><div id="error-bar"></div></div><div class="legend"><span><i class="review-dot"></i>Human review</span><span><i class="pass-dot"></i>Correct auto-pass</span><span><i class="error-dot"></i>Incorrect auto-pass</span></div><p id="summary" class="summary"></p>
       </div>
     </section>
-    <section class="dataset"><div class="section-heading"><div><p class="eyebrow">03 / INSPECT THE SAMPLE</p><h2>100 simulated AI results</h2></div><p>The same sample is used at every threshold.</p></div><div id="grid" class="grid" aria-hidden="true"></div><p class="hint">Each tile is one result. The colors match the legend above.</p><details><summary>View confidence scores, outcomes, and routing</summary><div class="table-scroll"><table><caption class="sr-only">Simulated results and review decisions</caption><thead><tr><th>Result</th><th>Confidence</th><th>Actual outcome</th><th>Decision</th></tr></thead><tbody id="rows"></tbody></table></div></details></section>
-    <aside><h2>What this simulation can tell you</h2><p>A higher threshold sends more work to reviewers and lets fewer errors pass unchecked. These scores and outcomes are invented; confidence is not a guarantee of correctness. Human reviewers can also make mistakes. This tool counts errors that bypass review and does not predict errors after human review.</p><p>Rule: confidence below the threshold → human review; otherwise → auto-pass. At 0%, all results auto-pass. At 100%, all results go to review.</p></aside>
-    <footer>Review Balance · Cornell AI Strategy New Member Education <span>Sample data only · No AI service connected</span></footer>
+    <section class="dataset" aria-labelledby="import-title">
+      <h2 id="import-title">Import CSV</h2>
+      <p>Use a practice file with fictional AI results. The file is checked in your browser.</p>
+      <button id="import-button" type="button">Import CSV</button>
+      <input id="import-file" type="file" accept=".csv,text/csv" hidden>
+      <button id="use-sample" type="button" hidden>Use sample data</button>
+      <p id="import-status" role="status"></p>
+      <ul id="import-issues" hidden></ul>
+    </section>
+    <section class="dataset"><div class="section-heading"><div><p class="eyebrow">03 / INSPECT THE SAMPLE</p><h2 id="dataset-title">100 simulated AI results</h2></div><p>The same dataset is used at every threshold.</p></div><div id="grid" class="grid" aria-hidden="true"></div><p class="hint">Each tile is one result. The colors match the legend above.</p><details><summary>View confidence scores, outcomes, and routing</summary><div class="table-scroll"><table><caption class="sr-only">Simulated results and review decisions</caption><thead><tr><th>Result</th><th>Confidence</th><th>Actual outcome</th><th>Decision</th></tr></thead><tbody id="rows"></tbody></table></div></details></section>
+    <aside><h2>What this simulation can tell you</h2><p>A higher threshold sends more work to reviewers and lets fewer errors pass unchecked. The built-in sample uses invented scores and outcomes; confidence is not a guarantee of correctness. Human reviewers can also make mistakes. This tool counts errors that bypass review and does not predict errors after human review.</p><p>Rule: confidence below the threshold → human review; otherwise → auto-pass. At 0%, all results auto-pass. At 100%, all results go to review.</p></aside>
+    <footer>Review Balance · Cornell AI Strategy New Member Education <span>Practice data · No AI service connected</span></footer>
   </main>
 </body>
 </html>
