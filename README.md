@@ -30,6 +30,9 @@ The student confirmed the simulator appeared in the browser and reported correct
 | 6 | Data | Import `data/clean.csv` | 19 loaded, 0 rejected, 0 duplicate warnings | Counts matched in automated and student browser checks | Pass |
 | 7 | Data | Import `data/raw.csv` | 15 loaded, 10 rejected with reasons, one duplicate warning on row 10 | Counts matched in automated and student browser checks. The automated check also verified the duplicate and the out-of-range confidence on row 11. | Pass |
 | 8 | Data | Import a one-row CSV with confidence 112 | 0 loaded, 1 rejected with a range error. Keep the previous dataset. | Counts and dataset retention matched in an automated import check | Pass |
+| 9 | API | Load the page with a valid GitHub response | Show the last code push and save the timestamp locally | Both happened with a simulated successful response | Pass |
+| 10 | API | After a successful fetch, refresh activity while offline | Show a failure message, the saved push time, and when it was fetched | All three appeared with a simulated network failure | Pass |
+| 11 | API | Refresh with a slow request | Request an 8-second timeout, show a timeout message, and re-enable Refresh | Timeout setting and recovery matched with a simulated timeout | Pass |
 
 Reset was checked automatically and confirmed by the student in the browser: threshold returns to 70% and clears the validation message. Real number inputs may reject letters before the input handler sees them; an empty value is handled safely.
 
@@ -49,7 +52,10 @@ Scores and outcomes are invented, not a calibrated model or representative produ
 
 - Added CSV validation and import. The student confirmed the browser tests page showed 16 passing checks. Automated import checks covered the raw file, the clean file, and a file with only an invalid row. The student imported both practice files in the browser and confirmed the expected counts.
 
+- Added a GitHub activity panel for Week 7. All 18 automated tests passed, including both response checks. Simulated requests also verified success, cached recovery, timeout, and HTTP error handling. The development environment could not reach the live API, so the response tests use GitHub’s documented example.
+
 ## Changes
+- Added live GitHub repository activity with a saved response for connection failures.
 - Added `AGENTS.md` with the assignment's static-site rules.
 - Built the simulator with plain HTML, CSS, and JavaScript.
 - Added threshold controls, three totals, a routing bar, 100 result tiles, and a detailed table.
@@ -90,3 +96,14 @@ Validation rejects a row with errors and lists each issue by row number and colu
 Open `data/tests.html` in a browser to run the checks. After publishing version 2, the same page will be available at [Data tests on GitHub Pages](https://ms0408choi.github.io/CAIS_NME_Project/data/tests.html). All 16 passed in a JavaScript run using a fixed cutoff of November 4, 2026. The raw CSV had 15 accepted rows, 10 rejected rows, and one duplicate warning. The cleaned CSV had 19 accepted rows and no rejections or warnings.
 
 Use **Import CSV** on the simulator to load valid rows from a practice file. Use **Use sample data** to return to the built-in results. An import with no valid rows leaves the current dataset in place.
+
+## API
+
+Review Balance reads the public repository’s latest push timestamp from the GitHub REST API. The timestamp changes with repository activity, so the browser requests it from GitHub. [Endpoint documentation](https://docs.github.com/en/rest/repos/repos#get-a-repository) · [API terms](https://docs.github.com/en/site-policy/github-terms/github-terms-of-service#h-api-terms)
+
+- Request `GET https://api.github.com/repos/ms0408choi/CAIS_NME_Project` on page load or when **Refresh activity** is clicked.
+- `pushed_at` must be a string that can be read as a date and time.
+- The panel shows **Loading…** while waiting. It cancels the request after eight seconds and displays **Could not load GitHub activity** if the request fails. When available, the saved response is shown with **Last updated** and its fetch time.
+- The request uses the public repository URL without authentication. Only the public push timestamp and the time it was fetched are saved in the browser for this feature.
+
+To test offline recovery, open the site online first and wait for **Last code push**. In Chrome DevTools, set the Network tab to **Offline**, then click **Refresh activity** and move the simulator slider. Check for the error and saved timestamp while the slider still updates. Return the Network setting to **No throttling** afterward.

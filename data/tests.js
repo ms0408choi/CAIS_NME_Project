@@ -10,7 +10,17 @@ function fileCounts(result) {
   return [result.accepted.length, result.rejected.length, result.warnings.length];
 }
 
+// GitHub's documented repository response, trimmed to the field we use.
+const repositoryResponse = { pushed_at: '2011-01-26T19:06:43Z' };
+
 const dataTests = [
+  ['GitHub response returns its push timestamp', { ok: true, data: { pushed_at: '2011-01-26T19:06:43Z' } },
+    () => checkResponse(repositoryResponse)],
+  ['GitHub response missing pushed_at reports the field', { ok: false, error: 'pushed_at must be a valid timestamp.' },
+    () => {
+      const { pushed_at, ...missingTimestamp } = repositoryResponse;
+      return checkResponse(missingTimestamp);
+    }],
   ['A valid result passes', [], () => rowIssues(goodRow)],
   ['All blank columns are reported', goodRow.map((_, i) => [7, reviewSchema.columns[i].name, 'missing', 'error']),
     () => rowIssues(['', '', '', '', ''])],
